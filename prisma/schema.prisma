@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          Role      @default(ADMIN)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  school        School?   @relation(fields: [schoolId], references: [id])
+  schoolId      String?
+  activityLogs  ActivityLog[]
+
+  @@map("sgs_users")
+}
+
+model School {
+  id          String    @id @default(cuid())
+  name        String
+  location    String
+  bio         String?
+  logo        String?
+  website     String?
+  facebook    String?
+  twitter     String?
+  instagram   String?
+  users       User[]
+  classes     Class[]
+  subjects    Subject[]
+  students    Student[]
+  academicYears AcademicYear[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("sgs_schools")
+}
+
+model AcademicYear {
+  id        String    @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  isCurrent Boolean   @default(false)
+  school    School    @relation(fields: [schoolId], references: [id])
+  schoolId  String
+  students  StudentEnrollment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("sgs_academic_years")
+}
+
+model EducationLevel {
+  id        String    @id @default(cuid())
+  name      String
+  order     Int
+  classes   Class[]
+
+  @@map("sgs_education_levels")
+}
+
+model Class {
+  id          String    @id @default(cuid())
+  name        String
+  level       EducationLevel @relation(fields: [levelId], references: [id])
+  levelId     String
+  school      School    @relation(fields: [schoolId], references: [id])
+  schoolId    String
+  subjects    SubjectClass[]
+  students    StudentEnrollment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("sgs_classes")
+}
+
+model Subject {
+  id          String    @id @default(cuid())
+  name        String
+  school      School    @relation(fields: [schoolId], references: [id])
+  schoolId    String
+  classes     SubjectClass[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("sgs_subjects")
+}
+
+model SubjectClass {
+  id          String    @id @default(cuid())
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  subjectId   String
+  class       Class     @relation(fields: [classId], references: [id])
+  classId     String
+  coefficient Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("sgs_subject_classes")
+}
+
+model Student {
+  id          String    @id @default(cuid())
+  firstName   String
+  lastName    String
+  dateOfBirth DateTime
+  studentId   String?   @unique
+  school      School    @relation(fields: [schoolId], references: [id])
+  schoolId    String
+  enrollments StudentEnrollment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("sgs_students")
+}
+
+model StudentEnrollment {
+  id            String    @id @default(cuid())
+  student       Student   @relation(fields: [studentId], references: [id])
+  studentId     String
+  class         Class     @relation(fields: [classId], references: [id])
+  classId       String
+  academicYear  AcademicYear @relation(fields: [academicYearId], references: [id])
+  academicYearId String
+  monthlyAverages MonthlyAverage[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("sgs_student_enrollments")
+}
+
+model MonthlyAverage {
+  id            String    @id @default(cuid())
+  month         Int
+  average       Float
+  enrollment    StudentEnrollment @relation(fields: [enrollmentId], references: [id])
+  enrollmentId  String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("sgs_monthly_averages")
+}
+
+model ActivityLog {
+  id          String    @id @default(cuid())
+  action      String
+  details     String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime  @default(now())
+
+  @@map("sgs_activity_logs")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+}
