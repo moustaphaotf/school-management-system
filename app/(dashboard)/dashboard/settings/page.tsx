@@ -6,6 +6,8 @@ import { EducationLevels } from "@/components/settings/education-levels";
 import { AcademicYears } from "@/components/settings/academic-years";
 import { SchoolSettings } from "@/components/settings/school";
 import { Subjects } from "@/components/settings/subjects";
+import { Classes } from "@/components/settings/classes";
+
 
 
 export default function SettingsPage() {
@@ -19,6 +21,7 @@ export default function SettingsPage() {
         <TabsList>
           <TabsTrigger value="school">Établissement</TabsTrigger>
           <TabsTrigger value="education-levels">Niveaux d&apos;éducation</TabsTrigger>
+          <TabsTrigger value="classes">Classes</TabsTrigger>
           <TabsTrigger value="academic-years">Années académiques</TabsTrigger>
           <TabsTrigger value="subjects">Matières</TabsTrigger>
         </TabsList>
@@ -27,6 +30,9 @@ export default function SettingsPage() {
         </TabsContent>
         <TabsContent value="education-levels" className="space-y-4">
           <EducationLevels />
+        </TabsContent>
+        <TabsContent value="classes" className="space-y-4">
+          <Classes />
         </TabsContent>
         <TabsContent value="academic-years" className="space-y-4">
           <AcademicYears />
