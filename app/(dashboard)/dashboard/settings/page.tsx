@@ -5,6 +5,8 @@ import { Heading } from "@/components/ui/heading";
 import { EducationLevels } from "@/components/settings/education-levels";
 import { AcademicYears } from "@/components/settings/academic-years";
 import { SchoolSettings } from "@/components/settings/school";
+import { Subjects } from "@/components/settings/subjects";
+
 
 export default function SettingsPage() {
   return (
@@ -16,8 +18,9 @@ export default function SettingsPage() {
       <Tabs defaultValue="school" className="space-y-4">
         <TabsList>
           <TabsTrigger value="school">Établissement</TabsTrigger>
-          <TabsTrigger value="education-levels">Niveaux d'éducation</TabsTrigger>
+          <TabsTrigger value="education-levels">Niveaux d&apos;éducation</TabsTrigger>
           <TabsTrigger value="academic-years">Années académiques</TabsTrigger>
+          <TabsTrigger value="subjects">Matières</TabsTrigger>
         </TabsList>
         <TabsContent value="school" className="space-y-4">
           <SchoolSettings />
@@ -27,6 +30,9 @@ export default function SettingsPage() {
         </TabsContent>
         <TabsContent value="academic-years" className="space-y-4">
           <AcademicYears />
+        </TabsContent>
+        <TabsContent value="subjects" className="space-y-4">
+          <Subjects />
         </TabsContent>
       </Tabs>
     </div>

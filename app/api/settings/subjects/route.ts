@@ -11,16 +11,16 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const years = await db.academicYear.findMany({
+    const subjects = await db.subject.findMany({
       where: {
         schoolId: session.user.schoolId,
       },
       orderBy: {
-        startDate: "desc",
+        name: 'asc',
       },
     });
 
-    return NextResponse.json(years);
+    return NextResponse.json(subjects);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
@@ -36,29 +36,14 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    if (body.isCurrent) {
-      await db.academicYear.updateMany({
-        where: {
-          schoolId: session.user.schoolId,
-          isCurrent: true,
-        },
-        data: {
-          isCurrent: false,
-        },
-      });
-    }
-
-    const year = await db.academicYear.create({
+    const subject = await db.subject.create({
       data: {
         name: body.name,
-        startDate: new Date(body.startDate),
-        endDate: new Date(body.endDate),
-        isCurrent: body.isCurrent,
         schoolId: session.user.schoolId,
       },
     });
 
-    return NextResponse.json(year);
+    return NextResponse.json(subject);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
@@ -74,34 +59,16 @@ export async function PATCH(req: Request) {
 
     const body = await req.json();
 
-    if (body.isCurrent) {
-      await db.academicYear.updateMany({
-        where: {
-          schoolId: session.user.schoolId,
-          isCurrent: true,
-          id: {
-            not: body.id,
-          },
-        },
-        data: {
-          isCurrent: false,
-        },
-      });
-    }
-
-    const year = await db.academicYear.update({
+    const subject = await db.subject.update({
       where: {
         id: body.id,
       },
       data: {
         name: body.name,
-        startDate: new Date(body.startDate),
-        endDate: new Date(body.endDate),
-        isCurrent: body.isCurrent,
       },
     });
 
-    return NextResponse.json(year);
+    return NextResponse.json(subject);
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
