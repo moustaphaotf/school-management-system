@@ -80,5 +80,8 @@
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2"
   }
 }

@@ -1,21 +1,16 @@
-"use client";
-
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Users, Calendar, Settings } from "lucide-react";
+import { Users, Calendar, Settings } from "lucide-react";
 import { LandingNav } from "@/components/layout/landing-nav";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
-export default function Home() {
-  const { data: session } = useSession();
-  const router = useRouter();
+export default async function Home() {
+  const session = await getServerSession();
 
-  useEffect(() => {
-    if (session) {
-      router.push("/dashboard");
-    }
-  }, [session, router]);
+  if (session) {
+    return redirect('/dashboard')
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 to-white">
@@ -33,10 +28,9 @@ export default function Home() {
             <div className="mt-10">
               <Button
                 size="lg"
-                onClick={() => router.push("/auth/login")}
                 className="px-8"
               >
-                Commencer maintenant
+                <Link href={"/auth/login"}>Commencer maintenant</Link>
               </Button>
             </div>
           </div>

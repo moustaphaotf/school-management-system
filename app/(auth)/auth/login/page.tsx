@@ -14,9 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -26,6 +26,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { error, success } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,15 +45,24 @@ export default function LoginPage() {
         redirect: false,
       });
 
+      console.log(response)
+
       if (response?.error) {
-        toast.error("Identifiants invalides");
+        error({
+          title:"Les identifiants sont incorrects",
+          description: "Veuillez vérifier votre email et mot de passe",
+        });
         return;
       }
 
       router.push("/dashboard");
-      toast.success("Connexion réussie");
-    } catch (error) {
-      toast.error("Une erreur est survenue");
+      success({
+        title:"Connexion réussie",
+      });
+    } catch (err) {
+      error({
+        title:"Une erreur est survenue"
+      });
     } finally {
       setLoading(false);
     }

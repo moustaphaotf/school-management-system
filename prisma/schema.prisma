@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -13,7 +13,7 @@ model User {
   password      String
   firstName     String
   lastName      String
-  role          Role      @default(ADMIN)
+  role          String      @default("ADMIN")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   school        School?   @relation(fields: [schoolId], references: [id])
@@ -161,7 +161,7 @@ model ActivityLog {
   @@map("sgs_activity_logs")
 }
 
-enum Role {
-  ADMIN
-  TEACHER
-}
+// enum Role {
+//   ADMIN
+//   TEACHER
+// }
