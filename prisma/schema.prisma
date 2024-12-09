@@ -71,6 +71,7 @@ model EducationLevel {
 model Class {
   id          String    @id @default(cuid())
   name        String
+  order       Int       @default(0)
   level       EducationLevel @relation(fields: [levelId], references: [id])
   levelId     String
   school      School    @relation(fields: [schoolId], references: [id])

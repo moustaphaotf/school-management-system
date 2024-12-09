@@ -3,10 +3,7 @@ import { apiClient } from "@/lib/api-client";
 import { toast } from "sonner";
 import { Class, EducationLevel } from "@prisma/client";
 import { ClassFormValues } from "@/lib/validations/class";
-
-interface ClassWithLevel extends Class {
-  level: EducationLevel;
-}
+import { ClassWithLevel, ReorderClass } from "@/types/class";
 
 export function useClasses() {
   const queryClient = useQueryClient();
@@ -52,11 +49,24 @@ export function useClasses() {
     },
   });
 
+  const { mutate: reorderClasses } = useMutation({
+    mutationFn: (data: ReorderClass[]) =>
+      apiClient.patch("/api/settings/classes/reorder", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+      toast.success("Ordre des classes mis à jour avec succès");
+    },
+    onError: () => {
+      toast.error("Une erreur est survenue lors de la réorganisation des classes");
+    },
+  });
+
   return {
     classes,
     isLoading,
     createClass,
     updateClass,
     deleteClass,
+    reorderClasses,
   };
 }

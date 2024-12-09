@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 import { toast } from "sonner";
+import { ReorderEducationLevel } from "@/types/education-level";
 
 export type EducationLevel = {
   id: string;
@@ -40,10 +41,23 @@ export function useEducationLevels() {
     },
   });
 
+  const { mutate: reorderLevels } = useMutation({
+    mutationFn: (data: ReorderEducationLevel[]) =>
+      apiClient.patch("/api/settings/education-levels/reorder", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["education-levels"] });
+      toast.success("Ordre des niveaux mis à jour avec succès");
+    },
+    onError: () => {
+      toast.error("Une erreur est survenue lors de la réorganisation des niveaux");
+    },
+  });
+
   return {
     levels,
     isLoading,
     createLevel,
     updateLevel,
+    reorderLevels,
   };
 }

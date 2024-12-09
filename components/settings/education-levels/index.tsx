@@ -20,9 +20,10 @@ import { useEducationLevels } from "@/hooks/use-education-levels";
 import { EducationLevelForm } from "./education-level-form";
 import { EducationLevelList } from "./education-level-list";
 import { EducationLevel } from "@prisma/client";
+import { ReorderEducationLevel } from "@/types/education-level";
 
 export function EducationLevels() {
-  const { levels, isLoading, createLevel, updateLevel } = useEducationLevels();
+  const { levels, isLoading, createLevel, updateLevel, reorderLevels } = useEducationLevels();
   const [isOpen, setIsOpen] = useState(false);
   const [editingLevel, setEditingLevel] = useState<EducationLevel | null>(null);
 
@@ -45,6 +46,10 @@ export function EducationLevels() {
     setIsOpen(true);
   };
 
+  const handleReorder = async (reorderedLevels: ReorderEducationLevel[]) => {
+    await reorderLevels(reorderedLevels);
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -63,7 +68,8 @@ export function EducationLevels() {
       <CardHeader>
         <CardTitle>Niveaux d&apos;éducation</CardTitle>
         <CardDescription>
-          Gérez les différents niveaux d&apos;éducation de votre établissement
+          Gérez les différents niveaux d&apos;éducation de votre établissement. 
+          Glissez-déposez les lignes pour réorganiser l&apos;ordre des niveaux.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -93,6 +99,7 @@ export function EducationLevels() {
         <EducationLevelList
           levels={levels || []}
           onEdit={handleEdit}
+          onReorder={handleReorder}
         />
       </CardContent>
     </Card>

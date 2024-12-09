@@ -25,6 +25,9 @@ export async function GET() {
           }
         },
         {
+          order: 'asc',
+        },
+        {
           name: 'asc',
         },
       ],
@@ -46,11 +49,26 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
+    // Get the highest order for the level
+    const highestOrder = await db.class.findFirst({
+      where: {
+        levelId: body.levelId,
+        schoolId: session.user.schoolId,
+      },
+      orderBy: {
+        order: 'desc',
+      },
+      select: {
+        order: true,
+      },
+    });
+
     const class_ = await db.class.create({
       data: {
         name: body.name,
         levelId: body.levelId,
         schoolId: session.user.schoolId,
+        order: (highestOrder?.order || 0) + 1,
       },
       include: {
         level: true,

@@ -31,21 +31,15 @@ import { useEducationLevels } from "@/hooks/use-education-levels";
 import { ClassForm } from "./class-form";
 import { ClassList } from "./class-list";
 import { Class, EducationLevel } from "@prisma/client";
-
-interface ClassWithLevel extends Class {
-  level: EducationLevel;
-}
+import { ClassWithLevel, ReorderClass } from "@/types/class";
 
 export function Classes() {
-  const { classes, isLoading, createClass, updateClass, deleteClass } =
-    useClasses();
+  const { classes, isLoading, createClass, updateClass, deleteClass, reorderClasses } = useClasses();
   const { levels, isLoading: isLoadingLevels } = useEducationLevels();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editingClass, setEditingClass] = useState<ClassWithLevel | null>(null);
-  const [deletingClass, setDeletingClass] = useState<ClassWithLevel | null>(
-    null
-  );
+  const [deletingClass, setDeletingClass] = useState<ClassWithLevel | null>(null);
 
   const handleSubmit = async (values: any) => {
     if (editingClass) {
@@ -78,6 +72,10 @@ export function Classes() {
     }
   };
 
+  const handleReorder = async (reorderedClasses: ReorderClass[]) => {
+    await reorderClasses(reorderedClasses);
+  };
+
   if (isLoading || isLoadingLevels) {
     return (
       <Card>
@@ -96,18 +94,17 @@ export function Classes() {
       <CardHeader>
         <CardTitle>Classes</CardTitle>
         <CardDescription>
-          Gérez les classes de votre établissement
+          Gérez les classes de votre établissement.
+          Glissez-déposez les lignes pour réorganiser l&apos;ordre des classes.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="mb-4">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button
-                onClick={() => {
-                  setEditingClass(null);
-                }}
-              >
+              <Button onClick={() => {
+                setEditingClass(null);
+              }}>
                 Ajouter une classe
               </Button>
             </DialogTrigger>
@@ -130,28 +127,21 @@ export function Classes() {
           classes={classes || []}
           onEdit={handleEdit}
           onDelete={handleDelete}
+          onReorder={handleReorder}
         />
 
-        <AlertDialog
-          open={isDeleteDialogOpen}
-          onOpenChange={setIsDeleteDialogOpen}
-        >
+        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
               <AlertDialogDescription>
-                Cette action est irréversible. Cela supprimera définitivement la
-                classe
-                {deletingClass?.name && ` "${deletingClass.name}"`} et toutes
-                les données associées.
+                Cette action est irréversible. Cela supprimera définitivement la classe
+                {deletingClass?.name && ` "${deletingClass.name}"`} et toutes les données associées.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={confirmDelete}
-                className="bg-red-500 hover:bg-red-600"
-              >
+              <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600">
                 Supprimer
               </AlertDialogAction>
             </AlertDialogFooter>
