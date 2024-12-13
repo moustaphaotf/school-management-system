@@ -3,9 +3,16 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { School, GraduationCap, Users, Settings, Calendar, LogOut } from "lucide-react";
+import {
+  School,
+  GraduationCap,
+  Users,
+  Settings,
+  Calendar,
+  LogOut,
+} from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 const routes = [
@@ -43,9 +50,7 @@ export function Sidebar() {
     <div className="space-y-4 py-4 flex flex-col h-full bg-slate-900 text-white">
       <div className="px-3 py-2 flex-1">
         <Link href="/dashboard" className="flex items-center pl-3 mb-14">
-          <h1 className="text-2xl font-bold">
-            SGS
-          </h1>
+          <h1 className="text-2xl font-bold">SGS</h1>
         </Link>
         <ScrollArea className="flex-1">
           <div className="space-y-1">
@@ -70,7 +75,10 @@ export function Sidebar() {
       </div>
       <div className="px-3 py-2">
         <Button
-          onClick={() => signOut()}
+          onClick={async () => {
+            await signOut();
+            useRouter().push("/auth/login");
+          }}
           variant="ghost"
           className="w-full justify-start hover:bg-white/10"
         >

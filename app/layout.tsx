@@ -1,7 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Toaster } from '@/components/ui/sonner';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { AuthProvider } from '@/components/providers/auth-provider';
@@ -30,7 +31,7 @@ export default function RootLayout({
           >
             <QueryProvider>
               {children}
-              <Toaster />
+              <ToastContainer />
             </QueryProvider>
           </ThemeProvider>
         </AuthProvider>

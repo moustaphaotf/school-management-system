@@ -13,12 +13,12 @@ model User {
   password      String
   firstName     String
   lastName      String
-  role          String      @default("ADMIN")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  school        School?   @relation(fields: [schoolId], references: [id])
-  schoolId      String?
+  memberships   SchoolMembership[]
   activityLogs  ActivityLog[]
+  invitations   SchoolInvitation[]
+  teacherAssignments TeacherAssignement[]
 
   @@map("sgs_users")
 }
@@ -27,34 +27,88 @@ model School {
   id          String    @id @default(cuid())
   name        String
   location    String
+  country     String?
+  city        String?
+  phone       String?
   bio         String?
   logo        String?
   website     String?
   facebook    String?
   twitter     String?
   instagram   String?
-  users       User[]
+  members     SchoolMembership[]
+  invitations SchoolInvitation[]
   classes     Class[]
   subjects    Subject[]
   students    Student[]
   academicYears AcademicYear[]
+  educationLevels EducationLevel[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@map("sgs_schools")
 }
 
-model AcademicYear {
-  id        String    @id @default(cuid())
-  name      String
-  startDate DateTime
-  endDate   DateTime
-  isCurrent Boolean   @default(false)
-  school    School    @relation(fields: [schoolId], references: [id])
+model SchoolMembership {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  school    School   @relation(fields: [schoolId], references: [id])
   schoolId  String
-  students  StudentEnrollment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  role      String     @default("TEACHER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, schoolId])
+  @@map("sgs_school_memberships")
+}
+
+model SchoolInvitation {
+  id        String   @id @default(cuid())
+  email     String
+  school    School   @relation(fields: [schoolId], references: [id])
+  schoolId  String
+  role      String     @default("TEACHER")
+  token     String   @unique
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  status    String @default("PENDING")
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sgs_school_invitations")
+}
+
+model TeacherAssignement {
+  id            String    @id @default(cuid())
+  teacher       User      @relation(fields: [teacherId], references: [id])
+  teacherId     String
+  subject       Subject   @relation(fields: [subjectId], references: [id])
+  subjectId     String
+  academicYear  AcademicYear @relation(fields: [academicYearId], references: [id])
+  academicYearId String
+  class         Class     @relation(fields: [classId], references: [id])
+  classId       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([teacherId, subjectId, classId, academicYearId])
+  @@map("sgs_teacher_assignment")
+}
+
+model AcademicYear {
+  id              String    @id @default(cuid())
+  name            String
+  startDate       DateTime
+  endDate         DateTime
+  isCurrent       Boolean   @default(false)
+  school          School    @relation(fields: [schoolId], references: [id])
+  schoolId        String
+  students        StudentEnrollment[]
+  teacherAssignments TeacherAssignement[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@map("sgs_academic_years")
 }
@@ -63,35 +117,39 @@ model EducationLevel {
   id        String    @id @default(cuid())
   name      String
   order     Int
+  school  School @relation(fields: [schoolId], references: [id])
+  schoolId  String
   classes   Class[]
 
   @@map("sgs_education_levels")
 }
 
 model Class {
-  id          String    @id @default(cuid())
-  name        String
-  order       Int       @default(0)
-  level       EducationLevel @relation(fields: [levelId], references: [id])
-  levelId     String
-  school      School    @relation(fields: [schoolId], references: [id])
-  schoolId    String
-  subjects    SubjectClass[]
-  students    StudentEnrollment[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  order           Int       @default(0)
+  level           EducationLevel @relation(fields: [levelId], references: [id])
+  levelId         String
+  school          School    @relation(fields: [schoolId], references: [id])
+  schoolId        String
+  subjects        SubjectClass[]
+  students        StudentEnrollment[]
+  teacherAssignments TeacherAssignement[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@map("sgs_classes")
 }
 
 model Subject {
-  id          String    @id @default(cuid())
-  name        String
-  school      School    @relation(fields: [schoolId], references: [id])
-  schoolId    String
-  classes     SubjectClass[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  school          School    @relation(fields: [schoolId], references: [id])
+  schoolId        String
+  classes         SubjectClass[]
+  teacherAssignments TeacherAssignement[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@map("sgs_subjects")
 }
@@ -161,8 +219,3 @@ model ActivityLog {
 
   @@map("sgs_activity_logs")
 }
-
-// enum Role {
-//   ADMIN
-//   TEACHER
-// }

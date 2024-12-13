@@ -4,16 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
 import { compare } from "bcrypt";
 import { JWT } from "next-auth/jwt";
-
-// Type for the user object returned by the authorize callback
-interface AuthorizedUser extends NextAuthUser {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  schoolId?: string;
-}
+import { removeCurrentSchoolCookie } from "./utils/cookies";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -21,20 +12,21 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 10 * 60, // 10 minutes
   },
   pages: {
     signIn: "/auth/login",
     error: "/auth/login",
+    signOut: "/auth/login",
   },
   providers: [
     CredentialsProvider({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Mot de passe", type: "password" }
+        password: { label: "Mot de passe", type: "password" },
       },
-      async authorize(credentials): Promise<AuthorizedUser | null> {
+      async authorize(credentials): Promise<Session["user"] | null> {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -42,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         try {
           const user = await db.user.findUnique({
             where: {
-              email: credentials.email
+              email: credentials.email,
             },
             select: {
               id: true,
@@ -50,9 +42,7 @@ export const authOptions: NextAuthOptions = {
               password: true,
               firstName: true,
               lastName: true,
-              role: true,
-              schoolId: true,
-            }
+            },
           });
 
           if (!user) {
@@ -73,22 +63,25 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            role: user.role,
-            schoolId: user.schoolId ?? undefined,
           };
         } catch (error) {
           console.error("[AUTH_ERROR]", error);
           return null;
         }
-      }
-    })
+      },
+    }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }: { 
-      token: JWT, 
-      user: AuthorizedUser | undefined,
-      trigger?: "signIn" | "signUp" | "update",
-      session?: any
+    async jwt({
+      token,
+      user,
+      trigger,
+      session,
+    }: {
+      token: JWT;
+      user: any;
+      trigger?: "signIn" | "signUp" | "update";
+      session?: any;
     }): Promise<JWT> {
       // Initial sign in
       if (user) {
@@ -98,8 +91,6 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          role: user.role,
-          schoolId: user.schoolId,
         };
       }
 
@@ -112,9 +103,12 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
 
-    async session({ token, session }: { 
-      token: JWT, 
-      session: Session 
+    async session({
+      token,
+      session,
+    }: {
+      token: JWT;
+      session: Session;
     }): Promise<Session> {
       if (token) {
         session.user = {
@@ -122,11 +116,14 @@ export const authOptions: NextAuthOptions = {
           email: token.email as string,
           firstName: token.firstName as string,
           lastName: token.lastName as string,
-          role: token.role,
-          schoolId: token.schoolId as string | undefined,
         };
       }
       return session;
-    }
-  }
+    },
+  },
+  events: {
+    signOut: () => {
+      removeCurrentSchoolCookie();
+    },
+  },
 };
