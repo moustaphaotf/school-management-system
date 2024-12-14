@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,90 +19,92 @@ interface ConfirmationDialogProps {
   // Dialog content
   title?: string;
   description?: string | ReactNode;
-  
+
   // Trigger button
   trigger?: ReactNode;
   triggerText?: string;
   triggerVariant?: ButtonProps["variant"];
   triggerSize?: ButtonProps["size"];
   triggerClassName?: string;
-  
+
   // Action buttons
   cancelText?: string;
   confirmText?: string;
   confirmVariant?: ButtonProps["variant"];
   confirmClassName?: string;
-  
+
   // State and callbacks
   isLoading?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
 }
 
-export function ConfirmationDialog({
-  // Dialog content
-  title = "Êtes-vous sûr ?",
-  description = "Cette action est irréversible.",
-  
-  // Trigger button
-  trigger,
-  triggerText = "Confirmer",
-  triggerVariant = "ghost",
-  triggerSize = "sm",
-  triggerClassName,
-  
-  // Action buttons
-  cancelText = "Annuler",
-  confirmText = "Confirmer",
-  confirmVariant = "default",
-  confirmClassName,
-  
-  // State and callbacks
-  isLoading = false,
-  onConfirm,
-  onCancel,
-}: ConfirmationDialogProps) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        {trigger || (
-          <Button
-            variant={triggerVariant}
-            size={triggerSize}
-            className={triggerClassName}
-          >
-            {triggerText}
-          </Button>
-        )}
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          {typeof description === "string" ? (
-            <AlertDialogDescription>{description}</AlertDialogDescription>
-          ) : (
-            description
+export const ConfirmationDialog = React.forwardRef(
+  (
+    {
+      // Dialog content
+      title = "Êtes-vous sûr ?",
+      description = "Cette action est irréversible.",
+
+      // Trigger button
+      trigger,
+      triggerText = "Confirmer",
+      triggerVariant = "ghost",
+      triggerSize = "sm",
+      triggerClassName,
+
+      // Action buttons
+      cancelText = "Annuler",
+      confirmText = "Confirmer",
+      confirmVariant = "default",
+      confirmClassName,
+
+      // State and callbacks
+      isLoading = false,
+      onConfirm,
+      onCancel,
+    }: ConfirmationDialogProps,
+  ) => {
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          {trigger || (
+            <Button
+              variant={triggerVariant}
+              size={triggerSize}
+              className={triggerClassName}
+            >
+              {triggerText}
+            </Button>
           )}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel 
-            onClick={onCancel}
-            disabled={isLoading}
-          >
-            {cancelText}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={onConfirm}
-            disabled={isLoading}
-            className={cn(
-              confirmVariant === "destructive" && "bg-red-500 hover:bg-red-600",
-              confirmClassName
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{title}</AlertDialogTitle>
+            {typeof description === "string" ? (
+              <AlertDialogDescription>{description}</AlertDialogDescription>
+            ) : (
+              description
             )}
-          >
-            {isLoading ? "Chargement..." : confirmText}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={onCancel} disabled={isLoading}>
+              {cancelText}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onConfirm}
+              disabled={isLoading}
+              className={cn(
+                confirmVariant === "destructive" &&
+                  "bg-red-500 hover:bg-red-600",
+                confirmClassName
+              )}
+            >
+              {isLoading ? "Chargement..." : confirmText}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  }
+);

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { VariantProps, cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 
@@ -10,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
@@ -195,7 +196,11 @@ const Sidebar = React.forwardRef<
     if (isMobile) {
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+          <VisuallyHidden.Root>
+            <SheetTitle>Sidebar Tittle</SheetTitle>
+          </VisuallyHidden.Root>
           <SheetContent
+            aria-describedby={undefined}
             data-sidebar="sidebar"
             data-mobile="true"
             className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
