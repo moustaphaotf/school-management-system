@@ -12,18 +12,17 @@ import { EducationLevel } from "@prisma/client";
 import { canManageSchool } from "@/lib/utils/permissions";
 
 export async function PATCH(req: Request) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-  
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
 
     const levels: Pick<EducationLevel, "id" | "order">[] = await req.json();
 

@@ -38,18 +38,18 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const currentSchool = await getCurrentSchool();
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
+
     const body = await req.json();
     const values = academicYearSchema.parse(body);
 
@@ -83,18 +83,18 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-  
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
+
     const body = await req.json();
     const values = academicYearSchema.parse(body);
 

@@ -17,14 +17,13 @@ export async function GET(
   req: Request,
   { params }: { params: { subjectId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
 
     const subject = await db.subject.findUnique({
       where: {
@@ -48,18 +47,18 @@ export async function PATCH(
   req: Request,
   { params }: { params: { subjectId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-  
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-  
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    // if (!canManageSchool(currentSchool.role)) {
+    //   return forbiddenResponse();
+    // }
+
     const body = await req.json();
     const values = subjectSchema.partial().parse(body);
 
@@ -71,7 +70,7 @@ export async function PATCH(
       data: values,
     });
 
-    return successResponse(subject, { status: 200 });
+    return NextResponse.json(subject);
   } catch (error) {
     console.error("[UPDATE_SUBJECT_ERROR]", error);
     return errorResponse();
@@ -82,18 +81,18 @@ export async function DELETE(
   req: Request,
   { params }: { params: { subjectId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-  
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
+
     const subject = await db.subject.delete({
       where: {
         id: params.subjectId,

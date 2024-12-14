@@ -4,19 +4,15 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { schoolFormSchema } from "@/lib/validations";
 import { ROLES } from "@/lib/constants/roles";
+import { COOKIES_KEYS } from "@/lib/constants";
 import { setCurrentSchoolCookie } from "@/lib/utils/cookies";
-import {
-  errorResponse,
-  successResponse,
-  unauthorizedResponse,
-} from "@/lib/utils/api-response";
 
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
-      return unauthorizedResponse();
+      return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const schools = await db.schoolMembership.findMany({
@@ -39,21 +35,21 @@ export async function GET() {
         createdAt: "desc",
       },
     });
-    return successResponse(schools, { status: 200 });
+    return NextResponse.json(schools);
   } catch (error) {
     console.error("[GET_SCHOOLS_ERROR]", error);
-    return errorResponse();
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    return unauthorizedResponse();
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
     const body = await req.json();
     const values = schoolFormSchema.parse(body);
 
@@ -75,13 +71,13 @@ export async function POST(req: Request) {
       });
 
       // Set initial school cookie
-      setCurrentSchoolCookie(school.id);
       const response = NextResponse.json(membership);
+      setCurrentSchoolCookie(school.id);
 
       return response;
     });
 
-    return successResponse(result, { status: 201 });
+    return result;
   } catch (error) {
     console.error("[CREATE_SCHOOL_ERROR]", error);
     return new NextResponse("Internal Error", { status: 500 });

@@ -17,14 +17,13 @@ export async function GET(
   req: Request,
   { params }: { params: { levelId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
 
     const level = await db.educationLevel.findUnique({
       where: {
@@ -47,18 +46,18 @@ export async function PATCH(
   req: Request,
   { params }: { params: { levelId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
+
     const body = await req.json();
     const values = educationLevelSchema.partial().parse(body);
 
@@ -80,18 +79,18 @@ export async function DELETE(
   req: Request,
   { params }: { params: { levelId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
+
     const level = await db.educationLevel.delete({
       where: {
         id: params.levelId,

@@ -12,18 +12,17 @@ import {
 import { ReorderClass } from "@/lib/types/class";
 
 export async function PATCH(req: Request) {
-  const session = await getServerSession(authOptions);
-  const currentSchool = await getCurrentSchool();
-
-  if (!session?.user?.id || !currentSchool) {
-    return unauthorizedResponse();
-  }
-
-  if (!canManageSchool(currentSchool.role)) {
-    return forbiddenResponse();
-  }
-  
   try {
+    const session = await getServerSession(authOptions);
+    const currentSchool = await getCurrentSchool();
+
+    if (!session?.user?.id || !currentSchool) {
+      return unauthorizedResponse();
+    }
+
+    if (!canManageSchool(currentSchool.role)) {
+      return forbiddenResponse();
+    }
 
     const classes: ReorderClass[] = await req.json();
 
