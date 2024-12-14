@@ -11,9 +11,9 @@ import { SchoolForm } from "./school-form";
 import { useSchool } from "@/hooks/api";
 
 export function SchoolSettings() {
-  const { data, isLoading } = useSchool();
+  const { data, isLoading, isError } = useSchool();
 
-  if (isLoading || !data) {
+  if (isLoading || isError) {
     return (
       <Card>
         <CardContent className="p-6">
@@ -35,7 +35,7 @@ export function SchoolSettings() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <SchoolForm initialData={data.school} />
+        <SchoolForm initialData={data?.school} />
       </CardContent>
     </Card>
   );

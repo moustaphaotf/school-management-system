@@ -13,10 +13,10 @@ import { AcademicYearForm } from "./academic-year-form";
 import { AcademicYearList } from "./academic-year-list";
 
 export function AcademicYears() {
-  const { data: years, isLoading } = useAcademicYears();
+  const { data: years, isLoading, isError } = useAcademicYears();
 
 
-  if (isLoading) {
+  if (isLoading || isError ) {
     return (
       <Card>
         <CardContent className="p-6">

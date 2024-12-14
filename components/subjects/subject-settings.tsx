@@ -12,9 +12,9 @@ import { SubjectForm } from "./subject-form";
 import { SubjectList } from "./subject-list";
 
 export function Subjects() {
-  const { data: subjects, isLoading } = useSubjects();
+  const { data: subjects, isLoading, isError } = useSubjects();
 
-  if (isLoading || !subjects) {
+  if (isLoading || isError) {
     return (
       <Card>
         <CardContent className="p-6">

@@ -13,9 +13,9 @@ import { ClassList } from "./class-list";
 import { useClasses } from "@/hooks/api";
 
 export function Classes() {
-  const { data: classes, isLoading } = useClasses();
+  const { data: classes, isLoading, isError } = useClasses();
 
-  if (isLoading && !classes) {
+  if (isLoading || isError) {
     return (
       <Card>
         <CardContent className="p-6">

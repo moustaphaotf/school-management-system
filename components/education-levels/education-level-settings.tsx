@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,9 +13,9 @@ import { useEducationLevels } from "@/hooks/api";
 import { EducationLevelForm } from "./education-level-form";
 
 export function EducationLevels() {
-  const { data: levels, isLoading } = useEducationLevels();
+  const { data: levels, isLoading, isError } = useEducationLevels();
 
-  if (isLoading && !levels) {
+  if (isLoading || isError) {
     return (
       <Card>
         <CardContent className="p-6">
