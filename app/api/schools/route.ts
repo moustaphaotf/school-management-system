@@ -1,10 +1,11 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { schoolFormSchema } from "@/lib/validations";
 import { ROLES } from "@/lib/constants/roles";
-import { COOKIES_KEYS } from "@/lib/constants";
 import { setCurrentSchoolCookie } from "@/lib/utils/cookies";
 
 export async function GET() {
