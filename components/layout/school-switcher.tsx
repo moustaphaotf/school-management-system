@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronsUpDown, School } from "lucide-react";
+import { Check, ChevronsUpDown, School } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -20,27 +20,30 @@ import {
 } from "@/components/ui/sidebar";
 import { useSchool, useSchools, useSwitchSchool } from "@/hooks/api";
 import { Skeleton } from "../ui/skeleton";
-import { useRouter } from "next/navigation";
 import { ROLE_LABELS } from "@/lib/constants";
 
 export function SchoolSwitcher() {
   const { isMobile } = useSidebar();
-  const router = useRouter();
 
-  const { data: schoolMembership, isLoading: schoolMembershipLoading } =
-    useSchools();
+  const {
+    data: schoolMembership,
+    isLoading: schoolMembershipLoading,
+    isError: schoolMembershipError,
+  } = useSchools();
   const {
     data: currentSchoolMembership,
     isLoading: currentSchoolMembershipLoading,
+    isError: currentSchoolMembershipError,
   } = useSchool();
-  const { mutate: switchSchool, isPending: isSwitching } = useSwitchSchool();
+  const { mutate: switchSchool } = useSwitchSchool();
 
   if (
     schoolMembershipLoading ||
+    schoolMembershipError ||
     currentSchoolMembershipLoading ||
-    !schoolMembership
+    currentSchoolMembershipError
   ) {
-    return <Skeleton className="h-12 w-full" />;
+    return <Skeleton className="h-10 w-full" />;
   }
 
   return (
@@ -79,25 +82,29 @@ export function SchoolSwitcher() {
               schoolMembership?.map((membership, index) => (
                 <DropdownMenuItem
                   key={membership.id}
-                  onClick={() => {
-                    switchSchool(membership.school.id, {
-                      onSuccess: () => {
-                        router.refresh();
-                      },
-                    });
-                  }}
+                  onClick={() => switchSchool(membership.school.id)}
                   className="gap-2 p-2"
-                  disabled={isSwitching}
+                  asChild
                 >
-                  <div className="flex size-6 items-center justify-center rounded-sm border">
+                  <SidebarMenuButton
+                    disabled={
+                      membership.school.id ===
+                      currentSchoolMembership?.school.id
+                    }
+                  >
                     {/* <team.logo className="size-4 shrink-0" /> */}
-                  </div>
-                  {membership.school.name}
-                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                    {membership.school.name}
+                    <DropdownMenuShortcut>
+                      {membership.school.id ===
+                        currentSchoolMembership?.school.id && (
+                        <Check className="size-4" />
+                      )}
+                    </DropdownMenuShortcut>
+                  </SidebarMenuButton>
                 </DropdownMenuItem>
               ))}
-            <DropdownMenuSeparator />
-            {/* <DropdownMenuItem className="gap-2 p-2">
+            {/* <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
