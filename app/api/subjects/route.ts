@@ -13,14 +13,14 @@ import {
 import { canManageSchool } from "@/lib/utils/permissions";
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
     const subjects = await db.subject.findMany({
       where: {
         schoolId: currentSchool.schoolId,
@@ -38,18 +38,18 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
+  if (!canManageSchool(currentSchool.role)) {
+    return forbiddenResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
-    if (!canManageSchool(currentSchool.role)) {
-      return forbiddenResponse();
-    }
-
     const body = await req.json();
     const values = subjectSchema.parse(body);
 
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(subject);
+    return successResponse(subject, { status: 201 });
   } catch (error) {
     console.error("[CREATE_SUBJECT_ERROR]", error);
     return errorResponse();

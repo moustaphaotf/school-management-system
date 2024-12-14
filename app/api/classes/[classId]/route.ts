@@ -16,14 +16,14 @@ export async function GET(
   req: Request,
   { params }: { params: { classId: string } }
 ) {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
     const class_ = await db.class.findUnique({
       where: {
         id: params.classId,
@@ -49,18 +49,18 @@ export async function PATCH(
   req: Request,
   { params }: { params: { classId: string } }
 ) {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
+  if (!canManageSchool(currentSchool.role)) {
+    return forbiddenResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
-    if (!canManageSchool(currentSchool.role)) {
-      return forbiddenResponse();
-    }
-
     const body = await req.json();
     const values = classSchema.partial().parse(body);
 
@@ -86,18 +86,18 @@ export async function DELETE(
   req: Request,
   { params }: { params: { classId: string } }
 ) {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
+  if (!canManageSchool(currentSchool.role)) {
+    return forbiddenResponse();
+  }
+  
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
-    if (!canManageSchool(currentSchool.role)) {
-      return forbiddenResponse();
-    }
-
     const class_ = await db.class.delete({
       where: {
         id: params.classId,

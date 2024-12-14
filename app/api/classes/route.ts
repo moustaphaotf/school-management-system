@@ -12,14 +12,14 @@ import {
 } from "@/lib/utils/api-response";
 
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
     const classes = await db.class.findMany({
       where: {
         schoolId: currentSchool.schoolId,

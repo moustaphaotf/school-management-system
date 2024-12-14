@@ -16,18 +16,18 @@ export async function PATCH(
   req: Request,
   { params }: { params: { yearId: string } }
 ) {
+  const currentSchool = await getCurrentSchool();
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+  
+  if (!canManageSchool(currentSchool.role)) {
+    return forbiddenResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
-    if (!canManageSchool(currentSchool.role)) {
-      return forbiddenResponse();
-    }
-
     const body = await req.json();
     const values = academicYearSchema.partial().parse(body);
 
@@ -50,18 +50,18 @@ export async function DELETE(
   req: Request,
   { params }: { params: { yearId: string } }
 ) {
+  const session = await getServerSession(authOptions);
+  const currentSchool = await getCurrentSchool();
+
+  if (!session?.user?.id || !currentSchool) {
+    return unauthorizedResponse();
+  }
+
+  if (!canManageSchool(currentSchool.role)) {
+    return forbiddenResponse();
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    const currentSchool = await getCurrentSchool();
-
-    if (!session?.user?.id || !currentSchool) {
-      return unauthorizedResponse();
-    }
-
-    if (!canManageSchool(currentSchool.role)) {
-      return forbiddenResponse();
-    }
-
     const year = await db.academicYear.delete({
       where: {
         id: params.yearId,
