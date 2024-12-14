@@ -28,7 +28,6 @@ export function useSwitchSchool() {
       toastSuccess("Bienvenue dans votre espace de travail");
     },
     onError: (error) => {
-      console.log(error);
       toastError("Une erreur est survenue lors du basculement");
     },
   });

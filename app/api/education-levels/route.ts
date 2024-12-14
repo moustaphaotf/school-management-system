@@ -51,7 +51,6 @@ export async function POST(req: Request) {
       return forbiddenResponse();
     }
 
-    console.log(currentSchool);
     const body = await req.json();
     const values = educationLevelSchema.parse(body);
 
