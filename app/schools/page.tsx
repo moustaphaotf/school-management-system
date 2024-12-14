@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 export default function SchoolsPage() {
   const router = useRouter();
-  const { data: memberships, isLoading } = useSchools();
+  const { data: memberships, isLoading, isError } = useSchools();
   const { mutate: switchSchool, isPending: isSwitching } = useSwitchSchool();
 
   const handleSchoolSwitch = (schoolId: string) => {
@@ -20,7 +20,7 @@ export default function SchoolsPage() {
     });
   };
 
-  if (isLoading) {
+  if (isLoading || isError) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="h-8 w-8 animate-spin text-gray-500" />

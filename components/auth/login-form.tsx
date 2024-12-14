@@ -92,12 +92,12 @@ export function LoginForm() {
           {isSubmitting ? "Connexion..." : "Se connecter"}
         </Button>
       </form>
-      <div className="text-center text-sm text-gray-500">
+      {/* <div className="text-center text-sm text-gray-500">
         Pas encore de compte ?{" "}
         <Link href="/auth/register" className="text-blue-600 hover:underline">
           S&apos;inscrire
         </Link>
-      </div>
+      </div> */}
     </Form>
   );
 }

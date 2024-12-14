@@ -29,6 +29,7 @@ export default async function Home() {
               <Button
                 size="lg"
                 className="px-8"
+                asChild
               >
                 <Link href={"/auth/login"}>Commencer maintenant</Link>
               </Button>
