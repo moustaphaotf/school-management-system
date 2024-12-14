@@ -16,7 +16,10 @@ export default withAuth(
     const isPublicPage = PUBLIC_ROUTES.includes(req.nextUrl.pathname);
 
     if (!isAuth && !isPublicPage) {
-      return NextResponse.redirect(new URL("/auth/login", req.nextUrl.origin));
+      const callbackUrl = req.nextUrl;
+      return NextResponse.redirect(
+        new URL(`/auth/login?redirect=${callbackUrl}`, req.nextUrl.origin)
+      );
     }
 
     // Allow auth-related API routes

@@ -1,5 +1,6 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+import { signOut } from "next-auth/react";
+import { toastError } from "../utils/toast";
 
 const apiClient = axios.create({
   baseURL: "/api",
@@ -35,9 +36,13 @@ apiClient.interceptors.response.use(
     const message =
       error.response?.data?.error ||
       "Une erreur est survenue, veuillez réessayer ultérieurement";
-    toast.error(message, {
+    toastError(message, {
       delay: 2000,
     });
+    if (error.response?.status === 401) {
+      const callbackUrl = encodeURIComponent(window.location.href);
+      signOut({ callbackUrl: `/auth/login?redirect=${callbackUrl}` });
+    }
     return Promise.reject(error);
   }
 );

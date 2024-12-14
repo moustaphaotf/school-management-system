@@ -2,11 +2,10 @@
 
 import { ChevronsUpDown, Edit2, User2 } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -18,7 +17,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Skeleton } from "../../ui/skeleton";
 import Link from "next/link";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
@@ -27,8 +25,11 @@ import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { data } = useSession();
+  const [isHoveringUserIcon, setIsHoveringUserIcon] = useState(false);
 
-  const [isHoverUserIcon, setIsHoveringUserIcon] = useState(false);
+  const handleLogout = () => {
+    signOut({ callbackUrl: "/auth/login" });
+  };
 
   return (
     <SidebarMenu>
@@ -46,7 +47,7 @@ export function NavUser() {
               >
                 <Avatar className="h-8 w-8 rounded-full">
                   <AvatarFallback className="rounded-lg">
-                    {isHoverUserIcon ? <Edit2 /> : <User2 />}
+                    {isHoveringUserIcon ? <Edit2 /> : <User2 />}
                   </AvatarFallback>
                 </Avatar>
               </Link>
@@ -74,7 +75,7 @@ export function NavUser() {
                 >
                   <Avatar className="h-8 w-8 rounded-full">
                     <AvatarFallback className="rounded-lg">
-                      {isHoverUserIcon ? <Edit2 /> : <User2 />}
+                      {isHoveringUserIcon ? <Edit2 /> : <User2 />}
                     </AvatarFallback>
                   </Avatar>
                 </Link>
@@ -89,7 +90,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <ConfirmationDialog
-                onConfirm={() => signOut()}
+                onConfirm={handleLogout}
                 confirmText="Oui, me déconnecter"
                 cancelText="Non, conserver ma session"
                 triggerText={"Déconnexion"}

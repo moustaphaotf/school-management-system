@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -35,6 +35,7 @@ export function LoginForm() {
       password: "",
     },
   });
+  const searchParams = useSearchParams();
 
   const { isSubmitting } = form.formState;
 
@@ -52,6 +53,7 @@ export function LoginForm() {
       }
 
       toastSuccess("Connexion réussie");
+      router.push(searchParams.get("redirect") ?? "/dashboard");
     } catch (error) {
       toastError("Une erreur est survenue lors de l'authentification");
     }

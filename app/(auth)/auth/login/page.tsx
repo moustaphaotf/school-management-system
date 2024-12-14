@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { LoginForm } from "@/components/auth";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -13,7 +13,9 @@ export default function LoginPage() {
             Connectez-vous à votre compte administrateur
           </p>
         </div>
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
       </div>
     </div>
   );
