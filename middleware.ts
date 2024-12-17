@@ -22,10 +22,6 @@ export default withAuth(
 
     // Add school ID from cookie to API requests if available
     if (isApiRoute && !isApiAuthRoute) {
-      if (!isAuth) {
-        return new NextResponse("Unauthorized", { status: 401 });
-      }
-
       const schoolId = req.cookies.get(COOKIES_KEYS.CURRENT_SCHOOL)?.value;
       const headers = new Headers(req.headers);
 
