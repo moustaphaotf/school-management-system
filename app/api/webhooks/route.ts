@@ -1,11 +1,9 @@
 import { successResponse } from "@/lib/utils/api-response";
 
 export async function POST(req: Request) {
-  // const body = await req.json();
-
-  console.log({ requestContent: req.body });
-  // return successResponse(req.body);
-  return successResponse({ status: "OK" });
+  const body = await req.json();
+  console.log({ requestContent: body });
+  return successResponse(body);
 }
 
 export async function GET(req: Request) {
