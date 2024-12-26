@@ -148,6 +148,7 @@ model Subject {
   schoolId        String
   classes         SubjectClass[]
   teacherAssignments TeacherAssignement[]
+  studentGrades   Grades[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -190,23 +191,27 @@ model StudentEnrollment {
   classId       String
   academicYear  AcademicYear @relation(fields: [academicYearId], references: [id])
   academicYearId String
-  monthlyAverages MonthlyAverage[]
+  grades Grades[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   @@map("sgs_student_enrollments")
 }
 
-model MonthlyAverage {
+model Grades {
   id            String    @id @default(cuid())
-  month         Int
-  average       Float
+  value         Float
+  period        String // MONTHLY or QUARTERLY
+  month         Int?
+  term          Int?
   enrollment    StudentEnrollment @relation(fields: [enrollmentId], references: [id])
+  subject       Subject @relation(fields: [subjectId], references: [id])
+  subjectId     String
   enrollmentId  String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  @@map("sgs_monthly_averages")
+  @@map("sgs_grades")
 }
 
 model ActivityLog {
