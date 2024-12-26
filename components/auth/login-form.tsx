@@ -18,6 +18,7 @@ import { z } from "zod";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { toastError, toastSuccess } from "@/lib/utils/toast";
+import { APP_ROUTES } from "@/lib/constants";
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -41,19 +42,20 @@ export function LoginForm() {
 
   async function onSubmit(values: LoginFormValues) {
     try {
+      const callbackUrl = searchParams.toString();
       const response = await signIn("credentials", {
         email: values.email,
         password: values.password,
-        redirect: false,
+        redirect: true,
+        callbackUrl: `${APP_ROUTES.SCHOOLS.href}?${callbackUrl}`,
       });
+
+      toastSuccess("Connexion réussie");
 
       if (response?.error) {
         toast.error("Les identifiants sont incorrects");
         return;
       }
-
-      toastSuccess("Connexion réussie");
-      router.push(searchParams.get("redirect") ?? "/dashboard");
     } catch (error) {
       toastError("Une erreur est survenue lors de l'authentification");
     }

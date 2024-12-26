@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Users, Calendar, Settings } from "lucide-react";
 import { LandingNav } from "@/components/layout/landing-nav";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default async function Home() {
