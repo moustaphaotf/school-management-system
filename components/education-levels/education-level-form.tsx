@@ -8,11 +8,7 @@ import {
   EducationLevelFormValues,
   educationLevelSchema,
 } from "@/lib/validations";
-import {
-  FormDialog,
-  useFormDialog,
-  withFormDialogProvider,
-} from "../ui/form-dialog";
+import { FormDialog, useFormDialog, withFormDialog } from "../ui/form-dialog";
 import { FormWrapper } from "../ui/form-wrapper";
 import {
   FormControl,
@@ -28,69 +24,68 @@ interface EducationLevelFormProps {
   trigger?: React.ReactNode;
 }
 
-export const EducationLevelForm =
-  withFormDialogProvider<EducationLevelFormProps>(
-    ({ initialData, trigger }: EducationLevelFormProps) => {
-      const form = useForm<EducationLevelFormValues>({
-        resolver: zodResolver(educationLevelSchema),
-        defaultValues: {
-          name: initialData?.name || "",
-        },
-      });
-      const updateEducationLevel = useUpdateEducationLevel();
-      const createEducationLevel = useCreateEducationLevel();
-      const { setOpen } = useFormDialog();
+export const EducationLevelForm = withFormDialog<EducationLevelFormProps>(
+  ({ initialData, trigger }: EducationLevelFormProps) => {
+    const form = useForm<EducationLevelFormValues>({
+      resolver: zodResolver(educationLevelSchema),
+      defaultValues: {
+        name: initialData?.name || "",
+      },
+    });
+    const updateEducationLevel = useUpdateEducationLevel();
+    const createEducationLevel = useCreateEducationLevel();
+    const { setOpen } = useFormDialog();
 
-      const onSubmit = (values: EducationLevelFormValues) => {
-        if (initialData) {
-          updateEducationLevel.mutate(
-            { id: initialData.id, body: values },
-            {
-              onSuccess: () => setOpen(false),
-            }
-          );
-        } else {
-          createEducationLevel.mutate(values, {
-            onSuccess: () => {
-              setOpen(false);
-              form.reset();
-            },
-          });
-        }
-      };
-
-      return (
-        <FormDialog
-          title={
-            initialData
-              ? "Modifier un niveau d'études"
-              : "Ajouter un niveau d'études"
+    const onSubmit = (values: EducationLevelFormValues) => {
+      if (initialData) {
+        updateEducationLevel.mutate(
+          { id: initialData.id, body: values },
+          {
+            onSuccess: () => setOpen(false),
           }
-          trigger={trigger}
-          onOpenChange={(open) => console.log(open)}
+        );
+      } else {
+        createEducationLevel.mutate(values, {
+          onSuccess: () => {
+            setOpen(false);
+            form.reset();
+          },
+        });
+      }
+    };
+
+    return (
+      <FormDialog
+        title={
+          initialData
+            ? "Modifier un niveau d'études"
+            : "Ajouter un niveau d'études"
+        }
+        trigger={trigger}
+        onOpenChange={(open) => console.log(open)}
+      >
+        <FormWrapper
+          form={form}
+          onSubmit={onSubmit}
+          isLoading={
+            updateEducationLevel.isPending || createEducationLevel.isPending
+          }
         >
-          <FormWrapper
-            form={form}
-            onSubmit={onSubmit}
-            isLoading={
-              updateEducationLevel.isPending || createEducationLevel.isPending
-            }
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nom du niveau</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: Primaire" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </FormWrapper>
-        </FormDialog>
-      );
-    }
-  );
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom du niveau</FormLabel>
+                <FormControl>
+                  <Input placeholder="Ex: Primaire" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </FormWrapper>
+      </FormDialog>
+    );
+  }
+);

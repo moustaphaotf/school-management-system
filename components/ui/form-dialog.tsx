@@ -83,7 +83,6 @@ export function FormDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-
       <DialogTrigger asChild>
         {trigger || <Button>{title}</Button>}
       </DialogTrigger>
@@ -97,7 +96,7 @@ export function FormDialog({
   );
 }
 
-export function withFormDialogProvider<T extends object>(
+export function withFormDialog<T extends object>(
   FormComponent: React.ComponentType<T>
 ) {
   const DecoratedComponent = (props: T) => (

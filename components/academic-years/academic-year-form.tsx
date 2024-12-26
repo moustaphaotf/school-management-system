@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import {
   FormDialog,
   useFormDialog,
-  withFormDialogProvider,
+  withFormDialog,
 } from "@/components/ui/form-dialog";
 import { FormWrapper } from "@/components/ui/form-wrapper";
 import { AcademicYear } from "@prisma/client";
@@ -29,7 +29,7 @@ interface AcademicYearFormProps {
   trigger?: React.ReactNode;
 }
 
-export const AcademicYearForm = withFormDialogProvider(
+export const AcademicYearForm = withFormDialog(
   ({ initialData, trigger }: AcademicYearFormProps) => {
     const { mutate: createYear, isPending: isCreating } =
       useCreateAcademicYear();
@@ -54,17 +54,20 @@ export const AcademicYearForm = withFormDialogProvider(
 
     const onSubmit = (values: AcademicYearFormValues) => {
       if (initialData) {
-        updateYear({ id: initialData.id, data: values }, {
-          onSuccess: () => {
-            form.reset()
-            setOpen(false)
+        updateYear(
+          { id: initialData.id, data: values },
+          {
+            onSuccess: () => {
+              form.reset();
+              setOpen(false);
+            },
           }
-        });
+        );
       } else {
         createYear(values, {
           onSuccess: () => {
-            setOpen(false)
-          }
+            setOpen(false);
+          },
         });
       }
     };

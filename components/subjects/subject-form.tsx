@@ -5,11 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Subject } from "@prisma/client";
 import { SubjectFormValues, subjectSchema } from "@/lib/validations/subject";
-import {
-  FormDialog,
-  useFormDialog,
-  withFormDialogProvider,
-} from "../ui/form-dialog";
+import { FormDialog, useFormDialog, withFormDialog } from "../ui/form-dialog";
 import { useCreateSubject, useUpdateSubject } from "@/hooks/api";
 import { FormWrapper } from "../ui/form-wrapper";
 import {
@@ -25,7 +21,7 @@ interface SubjectFormProps {
   trigger?: React.ReactNode;
 }
 
-export const SubjectForm = withFormDialogProvider<SubjectFormProps>(
+export const SubjectForm = withFormDialog<SubjectFormProps>(
   ({ initialData, trigger }: SubjectFormProps) => {
     const form = useForm<SubjectFormValues>({
       resolver: zodResolver(subjectSchema),
@@ -58,11 +54,7 @@ export const SubjectForm = withFormDialogProvider<SubjectFormProps>(
 
     return (
       <FormDialog
-        title={
-          initialData
-            ? "Modifier une matière"
-            : "Ajouter une matière"
-        }
+        title={initialData ? "Modifier une matière" : "Ajouter une matière"}
         trigger={trigger}
         onOpenChange={(open) => console.log(open)}
       >

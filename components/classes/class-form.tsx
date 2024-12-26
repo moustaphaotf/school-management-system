@@ -25,11 +25,7 @@ import {
   useEducationLevels,
   useUpdateClass,
 } from "@/hooks/api";
-import {
-  FormDialog,
-  useFormDialog,
-  withFormDialogProvider,
-} from "../ui/form-dialog";
+import { FormDialog, useFormDialog, withFormDialog } from "../ui/form-dialog";
 import { FormWrapper } from "../ui/form-wrapper";
 
 interface ClassFormProps {
@@ -37,7 +33,7 @@ interface ClassFormProps {
   trigger?: React.ReactNode;
 }
 
-export const ClassForm = withFormDialogProvider(
+export const ClassForm = withFormDialog(
   ({ initialData, trigger }: ClassFormProps) => {
     const { data: levels } = useEducationLevels();
     const { mutate: createClass, isPending: isCreating } = useCreateClass();
@@ -111,11 +107,12 @@ export const ClassForm = withFormDialogProvider(
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {levels && levels.map((level) => (
-                      <SelectItem key={level.id} value={level.id}>
-                        {level.name}
-                      </SelectItem>
-                    ))}
+                    {levels &&
+                      levels.map((level) => (
+                        <SelectItem key={level.id} value={level.id}>
+                          {level.name}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
