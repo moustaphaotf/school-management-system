@@ -19,6 +19,10 @@ export type NavItem = {
 };
 
 export const APP_ROUTES: Record<string, NavItem> = {
+  SCHOOLS: {
+    label: "Vos établissements",
+    href: "/schools",
+  },
   DASHBOARD: {
     label: "Tableau de bord",
     icon: LayoutDashboard,

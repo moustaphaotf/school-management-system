@@ -7,6 +7,7 @@ import { Subjects } from "@/components/subjects/subject-settings";
 import { Classes } from "@/components/classes/class-settings";
 import { PageHeader } from "@/components/layout";
 import { SchoolSettings } from "@/components/schools/school-settings";
+import { SubjectClassSettings } from "@/components/subjects-classes/subject-class-settings";
 
 const breadcrumbs = [
   {
@@ -28,7 +29,9 @@ export default function SettingsPage() {
           </TabsTrigger>
           <TabsTrigger value="classes">Classes</TabsTrigger>
           <TabsTrigger value="subjects">Matières</TabsTrigger>
+          <TabsTrigger value="subject-classes">Matières par classe</TabsTrigger>
         </TabsList>
+
         <TabsContent value="school" className="space-y-4">
           <SchoolSettings />
         </TabsContent>
@@ -43,6 +46,9 @@ export default function SettingsPage() {
         </TabsContent>
         <TabsContent value="subjects" className="space-y-4">
           <Subjects />
+        </TabsContent>
+        <TabsContent value="subject-classes" className="space-y-4">
+          <SubjectClassSettings />
         </TabsContent>
       </Tabs>
     </div>

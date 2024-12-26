@@ -40,6 +40,12 @@ export const SUBJECT_ENDPOINTS = {
   DETAIL: (id: string) => `/subjects/${id}`,
 } as const;
 
+// Subject-Class endpoints
+export const SUBJECT_CLASS_ENDPOINTS = {
+  BASE: "/subjects-classes",
+  DETAIL: (id: string) => `/subjects-classes/${id}`,
+} as const;
+
 // Teacher Assignment endpoints
 export const TEACHER_ASSIGNMENT_ENDPOINTS = {
   BASE: "/teacher-assignments",

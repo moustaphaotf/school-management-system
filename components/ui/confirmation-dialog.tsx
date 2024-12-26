@@ -64,6 +64,7 @@ export const ConfirmationDialog = React.forwardRef(
       onConfirm,
       onCancel,
     }: ConfirmationDialogProps,
+    ref
   ) => {
     return (
       <AlertDialog>
@@ -108,3 +109,5 @@ export const ConfirmationDialog = React.forwardRef(
     );
   }
 );
+
+ConfirmationDialog.displayName = 'ConfirmationDialog'
