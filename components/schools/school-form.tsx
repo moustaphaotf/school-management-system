@@ -17,6 +17,7 @@ import { useCreateSchool, useUpdateSchool } from "@/hooks/api";
 import { School } from "@prisma/client";
 import { PhoneInputField } from "../ui/phone-input";
 import { schoolFormSchema, SchoolFormValues } from "@/lib/validations/school";
+import { useEffect } from "react";
 
 interface SchoolFormProps {
   initialData?: School;
@@ -41,6 +42,23 @@ export function SchoolForm({ initialData }: SchoolFormProps) {
       instagram: initialData?.instagram || "",
     },
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        name: initialData?.name || "",
+        location: initialData?.location || "",
+        country: initialData?.country || "",
+        city: initialData?.city || "",
+        phone: initialData?.phone || "",
+        bio: initialData?.bio || "",
+        website: initialData?.website || "",
+        facebook: initialData?.facebook || "",
+        twitter: initialData?.twitter || "",
+        instagram: initialData?.instagram || "",
+      });
+    }
+  }, [initialData]);
 
   const onSubmit = (values: SchoolFormValues) => {
     if (initialData) {
