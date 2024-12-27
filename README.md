@@ -32,19 +32,19 @@ Ce projet vise à fournir une solution complète pour la gestion des établissem
 
 ```
 .
-├── app/                    # Routes et pages Next.js
-│   ├── (auth)/            # Routes d'authentification
-│   ├── (dashboard)/       # Routes du tableau de bord
-│   └── api/               # Routes API
-├── components/            # Composants React
-│   ├── ui/               # Composants UI réutilisables
-│   └── [feature]/        # Composants spécifiques aux fonctionnalités
-├── lib/                   # Utilitaires et configurations
-│   ├── services/         # Services API
-│   ├── types/            # Types TypeScript
-│   ├── utils/            # Fonctions utilitaires
-│   └── validations/      # Schémas de validation
-├── hooks/                # Hooks React personnalisés
+├── app/                 # Routes et pages Next.js
+│   ├── (auth)/          # Routes d'authentification
+│   ├── (dashboard)/     # Routes du tableau de bord
+│   └── api/             # Routes API
+├── components/          # Composants React
+│   ├── ui/              # Composants UI réutilisables
+│   └── [feature]/       # Composants spécifiques aux fonctionnalités
+├── lib/                 # Utilitaires et configurations
+│   ├── services/        # Services API
+│   ├── types/           # Types TypeScript
+│   ├── utils/           # Fonctions utilitaires
+│   └── validations/     # Schémas de validation
+├── hooks/               # Hooks React personnalisés
 └── prisma/              # Configuration et schéma Prisma
 ```
 
