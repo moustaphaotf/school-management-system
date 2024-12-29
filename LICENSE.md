@@ -1,6 +1,6 @@
 # Licence
 
-Copyright (c) 2024 [Votre Nom]
+Copyright (c) 2024 Mamadou Moustapha DIALLO
 
 Tous droits réservés.
 
@@ -27,7 +27,7 @@ Ce logiciel et sa documentation associée sont protégés par le droit d'auteur.
 ## Contact
 
 Pour toute demande d'autorisation ou question concernant cette licence, veuillez contacter :
-[Votre Email]
+moustaphaotf@gmail.com
 
 ---
 
