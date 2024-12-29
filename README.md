@@ -62,7 +62,8 @@ npm install
 
 3. Configurez les variables d'environnement :
 ```bash
-cp .env.example .env
+cp .env.example .env.local
+npx auth secret # Permet de générer un secret et l'ajoute automatiquement dans le fichier précédement créé
 ```
 
 4. Initialisez la base de données :
