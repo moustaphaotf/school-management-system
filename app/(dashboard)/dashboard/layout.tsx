@@ -12,7 +12,7 @@ export default async function DashboardLayout({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
 
-  const session = getServerSession();
+  const session = await getServerSession();
   if (!session) {
     return redirect("/auth/login");
   }
