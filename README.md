@@ -13,20 +13,23 @@ Ce projet vise à fournir une solution complète pour la gestion des établissem
 
 ## 🛠 Technologies Utilisées
 
+Here are the links for each of the technologies:
+
+
 - **Frontend**:
-  - Next.js 14 (App Router)
-  - React
-  - TypeScript
-  - Tailwind CSS
-  - Shadcn/UI
-  - React Query (TanStack Query)
-  - DND Kit (Drag and Drop)
+  - [Next.js 14 (App Router)](https://nextjs.org/)
+  - [React](https://reactjs.org/)
+  - [TypeScript](https://www.typescriptlang.org/)
+  - [Tailwind CSS](https://tailwindcss.com/)
+  - [Shadcn/UI](https://github.com/shadcn/ui)
+  - [React Query (TanStack Query)](https://tanstack.com/query)
+  - [DND Kit (Drag and Drop)](https://dndkit.com/)
 
 - **Backend**:
-  - Next.js API Routes
-  - Prisma ORM
-  - PostgreSQL
-  - NextAuth.js (Authentification)
+  - [Next.js API Routes](https://nextjs.org/docs/api-routes/introduction)  
+  - [Prisma ORM](https://www.prisma.io/)  
+  - [PostgreSQL](https://www.postgresql.org/)  
+  - [NextAuth.js (Authentication)](https://next-auth.js.org/)  
 
 ## 📁 Structure du Projet
 
